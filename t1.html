@@ -1,16 +1,120 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta name="viewport" content="width=device-width">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="utf-8">
-
+<style>
+table, td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script src="angular-indexedDB-master/angular-indexed-db.js"></script>
-
-</head>
 <body>
 
+<div ng-app="myApp" ng-controller="customersCtrl"> 
+
+<p>{{objects}}</p>
+<p>{{primaryKeys}}</p>
+
+
+</div>
+
+<script>
+var app = angular.module('myApp', ['indexedDB']);
+app.config(function ($indexedDBProvider) {
+    $indexedDBProvider
+      .connection('myIndexedDB')
+      .upgradeDatabase(1, function(event, db, tx){
+        //var objStore = db.createObjectStore('people', {keyPath: 'ssn'});
+		
+		//db.createObjectStore(storeName, options);
+		var objStore = db.createObjectStore('people', {keyPath: 'id',autoIncrement: true});
+		//Primary is id
+		//primary is autoIncrement
+		
+		//store.createIndex(indexName, keyPath, options);
+        //objStore.createIndex('name_idx', 'name', {unique: false});
+        //objStore.createIndex('age_idx', 'age', {unique: false});
+      });
+  });
+app.controller('customersCtrl', function($scope,$indexedDB) {
+	$scope.objects = [];
+        
+    $indexedDB.openStore('people', function(store){
+		/*
+		store.insert({"name": "John Doe2", "age": 1}).then(function(e){
+			console.log('Da insert');
+		});
+		*/
+		/*
+		store.upsert({"name": "John Doe2", "age": 1}).then(function(e){
+			console.log('Da upsert');
+		});
+		*/
+		
+		//insert multi value
+		/*
+		var addToPhotos = [];
+		for(var j=0; j < file.length; j++){
+			var photo = {"topicID": $scope.topicID, "filetype": file[j].filetype, "content": file[j].base64}
+			addToPhotos.push(photo);
+		}
+		store.insert(addToPhotos).then(function(e){
+			// do something
+		});
+		*/
+		var names = [
+			{name:'Jani',country:'Norway'},
+			{name:'Carl',country:'Sweden'},
+			{name:'Margareth',country:'England'},
+			{name:'Hege',country:'Norway'},
+			{name:'Joe',country:'Denmark'},
+			{name:'Gustav',country:'Sweden'},
+			{name:'Birgit',country:'Denmark'},
+			{name:'Mary',country:'England'},
+			{name:'Kai',country:'Norway'}
+		];
+		store.insert(names).then(function(e){
+			// do something
+		});
+		
+		
+
+		store.getAll().then(function(people) {
+			// Update scope
+			$scope.objects = people;
+		});
+		
+		//getAllKeys - Returns all the primary keys on the store
+		$indexedDB.openStore('people', function(store){
+			store.getAllKeys().then(function(e){
+				$scope.primaryKeys = e;
+			});
+		});
+		
+		/*
+		//clear - Deletes all items from the store
+		$indexedDB.openStore('people', function(store){
+			store.clear().then(function(){
+				// do something
+			});
+		});
+		*/
+		
+		/*
+		//delete - Deletes a single item from the store
+		$indexedDB.openStore('people', function(store){
+			//delete obj id=2
+			store.delete(2).then(function(){
+				// do something
+			});
+		});
+		*/
+		
+		
+    });
+});
+</script>
 
 </body>
 </html>
