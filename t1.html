@@ -15,6 +15,7 @@ table, td  {
 
 <p>{{objects}}</p>
 <p>{{primaryKeys}}</p>
+<p>{{people}}</p>
 
 
 </div>
@@ -74,9 +75,11 @@ app.controller('customersCtrl', function($scope,$indexedDB) {
 			{name:'Mary',country:'England'},
 			{name:'Kai',country:'Norway'}
 		];
+		/*
 		store.insert(names).then(function(e){
 			// do something
 		});
+		*/
 		
 		
 
@@ -113,6 +116,53 @@ app.controller('customersCtrl', function($scope,$indexedDB) {
 		
 		
     });
+	
+	//count - returns a count of all the items
+	$indexedDB.openStore('people', function(peoples){
+		peoples.count().then(function(e){
+			console.log(e);
+		});
+	});
+	
+	//find - returns a single item from the store
+	//Search item where id=9
+	$indexedDB.openStore('people', function(peoples){
+		peoples.find(9).then(function(e){
+			console.log(e);
+		});
+	});
+	
+	
+	
+	
+	/*
+	// available query functions
+	$lt(value) - less than
+	$gt(value) - greater than
+	$lte(value) - less than or equal
+	$gte(value) - greater than or equal
+	$eq(value) - equal
+	$between(lower, upper, doNotIncludeLowerBound? true/false, doNotIncludeUpperBound true/false) - between two bounds
+	$desc(unique) - descending order
+	$asc(unique) - ascending order
+	$index(value) - name of index
+	*/
+	
+	$indexedDB.openStore('people', function(peoples){
+		var find = peoples.query();
+		//var find=find.$eq(5);
+		find=find.$lt(3);
+		//console.log(find);
+		
+		//find = find.$index("name");
+		
+		//update scope
+		peoples.eachWhere(find).then(function(e){
+			console.log(e);
+			$scope.people = e;
+		});
+	});
+	
 });
 </script>
 
