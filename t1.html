@@ -9,6 +9,10 @@ table, td  {
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
 <script src="angular-indexedDB-master/angular-indexed-db.js"></script>
+
+<script src="porter-stemmer.js"></script>
+<script src="segment.js"></script>
+<script src="fulltext.js"></script>
 <body>
 
 <div ng-app="myApp" ng-controller="customersCtrl"> 
@@ -34,8 +38,8 @@ app.config(function ($indexedDBProvider) {
 		//primary is autoIncrement
 		
 		//store.createIndex(indexName, keyPath, options);
-        //objStore.createIndex('name_idx', 'name', {unique: false});
-        //objStore.createIndex('age_idx', 'age', {unique: false});
+        objStore.createIndex('name_idx', 'name', {unique: false});
+        objStore.createIndex('country_idx', 'country', {unique: false});
       });
   });
 app.controller('customersCtrl', function($scope,$indexedDB) {
@@ -150,11 +154,14 @@ app.controller('customersCtrl', function($scope,$indexedDB) {
 	
 	$indexedDB.openStore('people', function(peoples){
 		var find = peoples.query();
-		//var find=find.$eq(5);
-		find=find.$lt(3);
-		//console.log(find);
+		//find=find.$eq(5);
+		//find=find.$lt(3);
+		//console.log(find);		
+		//find = find.$index("name_idx");
 		
-		//find = find.$index("name");
+		//Find in country, key = Norway
+		find=find.$index("country_idx");
+		find=find.$eq("Norway");
 		
 		//update scope
 		peoples.eachWhere(find).then(function(e){
@@ -163,6 +170,10 @@ app.controller('customersCtrl', function($scope,$indexedDB) {
 		});
 	});
 	
+	
+	$indexedDB.openStore('people', function(peoples){
+		//console.log(peoples);
+	});
 });
 </script>
 

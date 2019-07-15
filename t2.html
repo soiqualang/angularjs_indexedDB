@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<script src="porter-stemmer.js"></script>
+<script src="segment.js"></script>
+<script src="fulltext.js"></script>
+<script>
+const doc1 = `You already know all the details, but here’s the official word from Yahoo on its $1.1 billion Tumblr deal`;
+const doc2 = `Yahoo! Inc. (NASDAQ: YHOO) and Tumblr announced today that they have reached a definitive agreement for Yahoo! to acquire Tumblr.`;
+const doc3 = `Of all the things 26-year-old David Karp has done in life, creating Tumblr stands as his most profitable venture, thus far.`
+indexedDB.deleteDatabase('db-fulltext');
+const request = indexedDB.open('db-fulltext');
+request.onupgradeneeded = e => {
+  const db = request.result;
+  const store = db.createObjectStore('documents', {keyPath: 'docid'});
+  store.createIndex('fulltext', 'terms', {multiEntry: true});
+  store.put({docid: 1, text: doc1, terms: FullText.tokenize(doc1, 'en')});
+  store.put({docid: 2, text: doc2, terms: FullText.tokenize(doc2, 'en')});
+  store.put({docid: 3, text: doc3, terms: FullText.tokenize(doc3, 'en')});
+};
+request.onsuccess = e => {
+  const db = request.result;
+  const tx = db.transaction('documents');
+  const index = tx.objectStore('documents').index('fulltext');
+  [
+    'yahoo',
+    'tumblr',
+    'Karp',
+    'yahoo tumblr'
+  ].forEach(query => {
+    FullText.search(index, query, 'en', ids =>
+      console.log('query:', JSON.stringify(query), 'results:', ids));
+  });
+};
+</script>
