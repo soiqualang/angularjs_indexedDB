@@ -96,7 +96,7 @@ $indexedDB.openStore('people', function(store){
 
 ## Delete
 
-## Delete all
+### Delete all
 
 ```js
 $indexedDB.openStore('people', function(store){
@@ -106,7 +106,7 @@ $indexedDB.openStore('people', function(store){
 });
 ```
 
-## Delete a record
+### Delete a record
 
 ```js
 $indexedDB.openStore('people', function(store){
@@ -174,6 +174,8 @@ $indexedDB.openStore('people', function(peoples){
 ```
 
 That's all, hope it useful for you^^
+
+(But I'm still finding a way to help search text like `.. like "%blabla%"` @@)
 
 
 
