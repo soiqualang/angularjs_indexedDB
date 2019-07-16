@@ -1,6 +1,8 @@
 # angularjs_indexedDB
 angularjs_indexedDB
 
+This is my note to work with indexedDB
+
 I used lib from here:
 
 https://github.com/bramski/angular-indexedDB
