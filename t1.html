@@ -27,21 +27,21 @@ table, td  {
 <script>
 var app = angular.module('myApp', ['indexedDB']);
 app.config(function ($indexedDBProvider) {
-    $indexedDBProvider
-      .connection('myIndexedDB')
-      .upgradeDatabase(1, function(event, db, tx){
-        //var objStore = db.createObjectStore('people', {keyPath: 'ssn'});
-		
-		//db.createObjectStore(storeName, options);
-		var objStore = db.createObjectStore('people', {keyPath: 'id',autoIncrement: true});
-		//Primary is id
-		//primary is autoIncrement
-		
-		//store.createIndex(indexName, keyPath, options);
-        objStore.createIndex('name_idx', 'name', {unique: false});
-        objStore.createIndex('country_idx', 'country', {unique: false});
-      });
+$indexedDBProvider
+  .connection('myIndexedDB')
+  .upgradeDatabase(1, function(event, db, tx){
+	//var objStore = db.createObjectStore('people', {keyPath: 'ssn'});
+	
+	//db.createObjectStore(storeName, options);
+	var objStore = db.createObjectStore('people', {keyPath: 'id',autoIncrement: true});
+	//Primary is id
+	//primary is autoIncrement
+	
+	//store.createIndex(indexName, keyPath, options);
+	objStore.createIndex('name_idx', 'name', {unique: false});
+	objStore.createIndex('country_idx', 'country', {unique: false});
   });
+});
 app.controller('customersCtrl', function($scope,$indexedDB) {
 	$scope.objects = [];
         
